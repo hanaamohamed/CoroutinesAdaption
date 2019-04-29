@@ -6,10 +6,10 @@ import com.example.coroutines.comon.models.responses.RegisteredUserResponse
 import com.example.coroutines.comon.mvp.BaseRepository
 import kotlinx.coroutines.*
 
-class UserRepository(coroutineScope: CoroutineScope, dispatcher: BaseDispatchers) :
+class UserRepository(dispatcher: BaseDispatchers) :
         BaseRepository(baseDispatchers = dispatcher) {
 
-    private val coroutineScope = coroutineScope
+    var coroutineScope: CoroutineScope? = null
 
 
     suspend fun registerUser(userName: String, email: String, password: String): Deferred<User> =
@@ -17,7 +17,6 @@ class UserRepository(coroutineScope: CoroutineScope, dispatcher: BaseDispatchers
                 delay(1000)
                 return@async getFakeUser(userName, email, password)
             }
-
 
     suspend fun login(email: String, password: String): Deferred<RegisteredUserResponse> =
             coroutineScope!!.async(baseDispatchers.runOnIODispatcher()) {
