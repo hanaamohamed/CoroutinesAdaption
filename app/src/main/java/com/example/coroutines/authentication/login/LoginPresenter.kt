@@ -5,7 +5,6 @@ import com.example.coroutines.comon.dispatchers.BaseDispatchers
 import com.example.coroutines.comon.mvp.BasePresenter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 class LoginPresenter(loginView: LoginView, private val userRepository: UserRepository, baseDispatchers: BaseDispatchers) :
         BasePresenter<LoginView, UserRepository>(loginView, userRepository, baseDispatchers = baseDispatchers) {
@@ -13,15 +12,14 @@ class LoginPresenter(loginView: LoginView, private val userRepository: UserRepos
     private val coroutineScope: CoroutineScope = CoroutineScope(baseDispatchers.runOnMainDispatcher())
 
     init {
-        userRepository.coroutineScope = coroutineScope
+        userRepository.provideCoroutineScope(coroutineScope)
     }
 
 
     fun login(email: String, password: String) {
-
         coroutineScope.launch {
             try {
-                val login = userRepository.login(email, password).await()
+                val login = userRepository.loginAsync(email, password).await()
                 view?.onSuccessfullyLoggedIn(login.token)
             } catch (ex: Exception) {
                 view?.onErrorOccurred()

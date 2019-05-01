@@ -6,36 +6,13 @@ import com.example.coroutines.comon.models.responses.RegisteredUserResponse
 import com.example.coroutines.comon.mvp.BaseRepository
 import kotlinx.coroutines.*
 
-class UserRepository(dispatcher: BaseDispatchers) :
-        BaseRepository(baseDispatchers = dispatcher) {
+interface UserRepository: BaseRepository {
 
-    var coroutineScope: CoroutineScope? = null
+    fun provideCoroutineScope(coroutineScope: CoroutineScope)
+
+    suspend fun registerUserAsync(userName: String, email: String, password: String): Deferred<User>
 
 
-    suspend fun registerUser(userName: String, email: String, password: String): Deferred<User> =
-            coroutineScope!!.async(baseDispatchers.runOnIODispatcher()) {
-                delay(1000)
-                return@async getFakeUser(userName, email, password)
-            }
-
-    suspend fun login(email: String, password: String): Deferred<RegisteredUserResponse> =
-            coroutineScope!!.async(baseDispatchers.runOnIODispatcher()) {
-                delay(1000)
-                var registeredUserResponse = RegisteredUserResponse()
-                // for now leave the user name empty as we are returning a dummy user
-                registeredUserResponse.user = getFakeUser("", email, password)
-                return@async registeredUserResponse
-            }
-
-    private fun getFakeUser(userName: String, email: String, password: String): User {
-        var user = User()
-        user.name = userName
-        user.email = email
-        return user
-    }
-
-    override fun destroy() {
-        coroutineScope?.cancel()
-    }
+    suspend fun loginAsync(email: String, password: String): Deferred<RegisteredUserResponse>
 
 }

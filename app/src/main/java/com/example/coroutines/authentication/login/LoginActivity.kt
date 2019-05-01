@@ -6,7 +6,7 @@ import android.widget.Toast
 import butterknife.BindView
 import butterknife.OnClick
 import com.example.coroutinekotlinarticle.R
-import com.example.coroutines.authentication.UserRepository
+import com.example.coroutines.authentication.UserRepositoryImp
 import com.example.coroutines.comon.activities.BaseActivity
 
 class LoginActivity : BaseActivity<LoginPresenter>(), LoginView {
@@ -29,7 +29,7 @@ class LoginActivity : BaseActivity<LoginPresenter>(), LoginView {
     }
 
     override fun createPresenter(): LoginPresenter = LoginPresenter(this,
-            UserRepository(dispatcher), dispatcher)
+            UserRepositoryImp(dispatcher), dispatcher)
 
     @OnClick(R.id.btn_login)
     fun onLoginButtonClicked() {
